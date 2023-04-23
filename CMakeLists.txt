@@ -1,32 +1,28 @@
-set(SOURCE_CODE onevpl_sample CACHE NAME "onevpl_sample")
-
-# CMakeの最低バージョンを記述
 cmake_minimum_required(VERSION 3.22)
+project( "onevpl_sample" )
+set( SOURCE_CODE "onevpl_sample" )
 
-if("${CMAKE_CXX_COMPILER}" STREQUAL "")
-    set(CMAKE_CC_COMPILER "icx")
-    set(CMAKE_CXX_COMPILER "icpx")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsycl")
-endif()
+#if("${CMAKE_CXX_COMPILER}" STREQUAL "")
+#    set(CMAKE_CC_COMPILER "icx")
+#    set(CMAKE_CXX_COMPILER "icpx")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsycl")
+#endif()
 
 
-# ソリューション名を指定
-project( ${SOURCE_CODE} )
-
-# OpenCVのパッケージを探す
+# find pakages
 find_package( OpenCV REQUIRED )
+find_package( VPL REQUIRED )
+find_package( GFLAGS REQUIRED )
 
-#ヘッダファイルのパスを指定
-include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-# 実行ファイル名とソース指定（ここではソースと同じ名前の実行ファイルを作ります）
+
+include_directories( ${OpenCV_INCLUDE_DIRS} ${VPL_INCLUDE_DIRS})
+
 add_executable( ${SOURCE_CODE} ${SOURCE_CODE}.cpp )
-
-#リンク先のライブラリを指定
-target_link_libraries( ${SOURCE_CODE} ${OpenCV_LIBS} )
+target_link_libraries( ${SOURCE_CODE} ${OpenCV_LIBS} ${VPL_LIBRARIES} ${GFLAGS} )
 
 
-file(COPY $ENV{ONEAPI_ROOT}/vpl/latest/examples/hello/hello-decode/src DESTINATION . FILES_MATCHING PATTERN "*.*")
-file(COPY $ENV{ONEAPI_ROOT}/vpl/latest/examples/hello/hello-decode/CMakeLists.txt DESTINATION .)
-file(COPY $ENV{ONEAPI_ROOT}/vpl/latest/examples/hello/hello-decode/PreLoad.cmake DESTINATION .)
-add_subdirectory (${PROJECT_BINARY_DIR}/ bin)
+#file(COPY $ENV{ONEAPI_ROOT}/vpl/latest/examples/hello/hello-decode/src DESTINATION . FILES_MATCHING PATTERN "*.*")
+#file(COPY $ENV{ONEAPI_ROOT}/vpl/latest/examples/hello/hello-decode/CMakeLists.txt DESTINATION .)
+#file(COPY $ENV{ONEAPI_ROOT}/vpl/latest/examples/hello/hello-decode/PreLoad.cmake DESTINATION .)
+#add_subdirectory (${PROJECT_BINARY_DIR}/ bin)
